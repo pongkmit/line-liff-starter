@@ -29,10 +29,10 @@ function initializeApp(data) {
                 }
             },
             error: function(xhr, ajaxOptions, thrownError) {
-                swal("Application Error", xhr.responseText, "warning");
+				window.alert('Error sending message: ' + xhr.responseText);
             },
             failure: function(response) {
-                swal("Application Error", response, "warning");
+				window.alert('Error sending message: ' + response);
             }
         };
         $.ajax(opt);
