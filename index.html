@@ -8,7 +8,6 @@
 <link href="https://pongkmit.github.io/line-liff-starter/iotfms/lib/bootstrap.min.css" rel="stylesheet">
 <style>
     .lifflink { cursor: copy; }
-    .btn-clear {position: fixed; top:10px; right: 10px;}
 </style>
 </head>
 <body>
@@ -20,8 +19,8 @@
             </div>
             <div class="panel-body">
                 <div class="row" >
-                    <form action="" method="POST" role="form">
-                        <input type="hidden" id=”lineidtxt” name=”lineidtxt”>
+                    <form role="form">
+                        <input type="hidden" id="LINE_ID" name="LINE_ID">
 						<div class="form-group" style="margin-left:16px;margin-right:16px;">
 							<div class="row">
 								<div class="col-sm-2">
@@ -30,7 +29,7 @@
 							</div>
 							<div class="row">
 								<div class="col-sm-7">
-									<input type="text" name="emailtxt" id="emailtxt" class="form-control" required="required">
+									<input type="text" name="EMAIL_ADDRESS" id="EMAIL_ADDRESS" class="form-control" required="required">
 								</div>
 							</div>
 						</div>
@@ -41,15 +40,13 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-sm-7">
-									
-									<input type="text" name="passwordtxt" id="passwordtxt" class="form-control" required="required">
-									
+								<div class="col-sm-7">									
+									<input type="text" name="PASSWORD" id="PASSWORD" class="form-control" required="required">									
 								</div>
 							</div>
 						</div>
                         <div class="col-sm-2" style="margin-top:30px;">
-                            <button name="registerBtn" id="registerBtn" class="btn btn-block btn-success">Register</button>
+                            <button name="registerBtn" id="registerBtn" class="btn btn-block">Register</button>
                         </div>
                     </form>
                 </div>
@@ -60,49 +57,47 @@
 </div>
 
 <!-- Latest compiled and minified JS -->
-<script src="https://pongkmit.github.io/line-liff-starter/iotfms/lib/jquery-3.3.1.min.js"></script>
+<script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://pongkmit.github.io/line-liff-starter/iotfms/lib/bootstrap.min.js"></script>
 <script>
 //init LIFF
 function initializeApp(data) {
 let urlParams = new URLSearchParams(window.location.search);
-$(‘#name’).val(urlParams.toString());
-$(‘#lineidtxt’).val(data.context.userId);
+$('#name').val(urlParams.toString());
+$('#LINE_ID').val(data.context.userId);
 }
 //ready
 $(function () {
 //init LIFF
-liff.init(function (data) {
-initializeApp(data);
-});
-//RegiterButton
-$(‘#”registerBtn”).click(function () {
-	$.ajax({
-       type: 'POST',
-       url: 'https://eb7e9f50.ngrok.io/api/LineBot/LineLogIn',
-	   contentType: 'application/x-www-form-urlencoded',
-	   dataType: 'json',
-       data: {
-         'EMAIL_ADDRESS': $("#emailtxt").val(),
-		 'PASSWORD': $("#passwordtxt").val(),
-		 'LINE_ID': $("#lineidtxt").val()
-       },
-       success: function (res) {
-			if (response.didError) {
-				window.alert("Register error: " + response.message);
-			} 
-			else {
-				window.alert("You have successfully registered");
-			}
-       },
-       error: function (res) {
-			window.alert('Error : ' + res.status);
-       },
-       complete: function(data) {
-       }
-     });
-});
-
+	liff.init(function (data) {
+		initializeApp(data);
+	});
+	//RegiterButton
+	$('#registerBtn').click(function (e) {
+		e.preventDefault();
+		var $form = $(this).closest('form');
+		var data = $form.serialize();
+		var res;
+		var err;
+		var opt = {
+		   type: 'post',
+		   url: 'https://508b154e.ngrok.io/api/LineBot/LineLogIn',
+		   contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+		   //dataType: 'json',
+		   data: data,
+		   success: function (result) {
+				window.alert("Register success.");
+		   },
+		   error: function (xhr, status, error) {
+				window.alert(status);
+				window.alert(error);
+				window.alert(xhr.message);
+		   }
+		 };
+		$.ajax(opt);
+		window.alert("Post register data.");
+	});
 });
 </script>
 </body>
